@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Data.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace API.DTOs
 {
@@ -16,7 +17,7 @@ namespace API.DTOs
 
         public string Username { get; set; } = string.Empty;
 
-        public string Adress { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
 
         public string Phone { get; set; } = string.Empty;
 
@@ -25,5 +26,7 @@ namespace API.DTOs
         public string State { get; set; } = string.Empty;
 
         public string City { get; set; } = string.Empty;
+
+        public ImageDTO Image { get; set; }
     }
 }

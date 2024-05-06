@@ -1,10 +1,23 @@
 ﻿using FluentResults;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Helpers
 {
     public static class FluentExtensions
     {
+        public static ProblemDetails ToProblemDetails(this ValidationFailure validationFailure, string? requestPath = null)
+        {
+            return new ProblemDetails
+            {
+                Title = validationFailure.PropertyName,
+                Detail = validationFailure.ErrorMessage,
+                Type = validationFailure.ErrorCode,
+                Status = validationFailure.CustomState is int state ? state : StatusCodes.Status400BadRequest,
+                Instance = requestPath
+            };
+        }
+
         public static IResult ToBadRequest(this IEnumerable<IError> errors)
         {
             var problemDetails = errors.Select(error => error.Metadata["ProblemDetails"] as ProblemDetails).ToList();

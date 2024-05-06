@@ -16,7 +16,7 @@ namespace API.Requests.Users.Create
 
         public string Username { get; set; } = string.Empty;
 
-        public string Adress { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
 
         public string Phone { get; set; } = string.Empty;
 
@@ -25,6 +25,7 @@ namespace API.Requests.Users.Create
         public string State { get; set; } = string.Empty;
 
         public string City { get; set; } = string.Empty;
+        public int ImageId { get; set; }
     }
 
 }
