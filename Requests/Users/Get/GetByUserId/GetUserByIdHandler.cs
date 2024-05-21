@@ -23,7 +23,11 @@ namespace API.Requests.Users.Get
 
         public async Task<Result<UserDTO>> Handle(GetUserByIdRequest request, CancellationToken cancellationToken)
         {
-            var user = await _db.Users.Include(user => user.Image).AsNoTracking().FirstOrDefaultAsync(user => user.Id == request.Id);
+            var user = await _db.Users
+                .Include(user => user.Image)
+                .Include(user => user.Workspaces)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(user => user.Id == request.UserId, cancellationToken);
 
             return _mapper.Map<UserDTO>(user);
         }

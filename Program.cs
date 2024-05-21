@@ -6,6 +6,7 @@ using API.Configs;
 using API.Behavior;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using FluentValidation;
+using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +34,7 @@ builder.Services.AddFluentValidationRulesToSwagger();
 
 var app = builder.Build();
 
+
 app.UseCors(x => x
             .AllowAnyOrigin()
             .AllowAnyMethod()
@@ -50,5 +52,11 @@ if (app.Environment.IsDevelopment())
 app.UseAuthorization();
 
 app.MapControllers();
+
+using var scope = app.Services.CreateScope();
+using var context = scope.ServiceProvider.GetRequiredService<FlowboardContext>();
+
+context.Database.Migrate();
+//migration
 
 app.Run();

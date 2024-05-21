@@ -28,25 +28,55 @@ namespace API.Controllers
             return result.IsSuccess ? Results.Created("/user", result.Value) : result.Errors.ToBadRequest();
         }
 
-        [HttpGet]
+        [HttpGet("{UserId}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<UserDTO[]>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IResult> GetUsersAsync()
+        public async Task<IResult> GetUserByIdAsync(int UserId)
         {
-            var result = await _mediator.Send(new GetUsersRequest());
+            var result = await _mediator.Send(new GetUserByIdRequest(UserId));
+
+            return result.IsSuccess ? Results.Ok(result.Value) : result.Errors.ToBadRequest();
+        } 
+        
+        [HttpGet("token/{Token}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<UserDTO[]>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IResult> GetUserByTokenAsync(string Token)
+        {
+            var result = await _mediator.Send(new GetUserByTokenRequest(Token));
 
             return result.IsSuccess ? Results.Ok(result.Value) : result.Errors.ToBadRequest();
         }
 
-        [HttpGet("{Id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<UserDTO>))]
+        [HttpGet("{email}/{password}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IResult> GetUserById(int Id)
+        public async Task<IResult> GetUserById(string email, string password)
         {
-            var result = await _mediator.Send(new GetUserByIdRequest(Id));
+            var result = await _mediator.Send(new GetUserByEmailAndPasswordRequest(email, password));
 
             return result.IsSuccess ? (result.Value != null ? Results.Ok(result.Value) : Results.NotFound(null)) : result.Errors.ToBadRequest();
+        }
+
+        [HttpGet("email/{email}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IResult> GetEmailExists(string email)
+        {
+            var result = await _mediator.Send(new GetEmailExistsRequest(email));
+
+            return result.IsSuccess ? Results.Ok(result.Value) : result.Errors.ToBadRequest();
+        }
+
+        [HttpGet("username/{username}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IResult> GetUsernameExists(string username)
+        {
+            var result = await _mediator.Send(new GetUsernameExistsRequest(username));
+
+            return result.IsSuccess ? Results.Ok(result.Value) : result.Errors.ToBadRequest();
         }
 
     }

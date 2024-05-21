@@ -26,7 +26,6 @@ namespace API.Requests.Users.Create
             await _db.Users.AddAsync(user, cancellationToken);
             await _db.SaveChangesAsync(cancellationToken);
 
-            //ToDo: Handle Not existing Image error (returns 500 server error to client)
             return _mapper.Map<UserDTO>(user);
         }
     }

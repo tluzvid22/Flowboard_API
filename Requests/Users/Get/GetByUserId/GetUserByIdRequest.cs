@@ -5,6 +5,6 @@ using MediatR;
 namespace API.Requests.Users.Get
 {
 
-    public record GetUserByIdRequest(int Id) : IRequest<Result<UserDTO>>;
+    public record GetUserByIdRequest(int UserId) : IRequest<Result<UserDTO>>;
 
 }

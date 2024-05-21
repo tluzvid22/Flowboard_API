@@ -52,20 +52,30 @@ namespace API.Requests.Users.Create
                     .WithErrorCode("/errors/user-state-invalid")
                     .WithMessage($"'{{PropertyName}}' must not be empty or default.");
 
-                RuleFor(x => x.City).NotEmpty()
-                    .WithErrorCode("/errors/user-city-invalid")
-                    .WithMessage($"'{{PropertyName}}' must not be empty or default.");
-
                 RuleFor(x => x.ImageId).NotEmpty()
                     .WithErrorCode("/errors/image-invalid")
                     .WithMessage($"'{{PropertyName}}' must not be empty or default.");
 
                 RuleFor(x => x).MustAsync(async (request, cancellation) =>
                 {
-                    return await db.Image.AsNoTracking().AnyAsync(image => image.Id == request.ImageId);                    
+                    return await db.Files.AsNoTracking().AnyAsync(image => image.Id == request.ImageId);                    
                 })
-                .WithErrorCode("/errors/image-invalid")
-                .WithMessage("ImageId must exist."); ;
+                .WithErrorCode("/errors/User/image-invalid")
+                .WithMessage("ImageId must exist.");
+
+                RuleFor(x => x).MustAsync(async (request, cancellation) =>
+                {
+                    return await db.Users.AsNoTracking().AnyAsync(user => user.Email == request.Email) == false;
+                })
+                .WithErrorCode("/errors/User/email-invalid")
+                .WithMessage("Email already exists.");
+                
+                RuleFor(x => x).MustAsync(async (request, cancellation) =>
+                {
+                    return await db.Users.AsNoTracking().AnyAsync(user => user.Username == request.Username) == false;
+                })
+                .WithErrorCode("/errors/User/username-invalid")
+                .WithMessage("Username already exists.");
             });
 
         }

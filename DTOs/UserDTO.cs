@@ -1,7 +1,4 @@
-﻿using Data.Entities;
-using System.ComponentModel.DataAnnotations;
-
-namespace API.DTOs
+﻿namespace API.DTOs
 {
     public record UserDTO : AuditDto
     {
@@ -25,8 +22,11 @@ namespace API.DTOs
 
         public string State { get; set; } = string.Empty;
 
-        public string City { get; set; } = string.Empty;
 
-        public ImageDTO Image { get; set; }
+        public ICollection<WorkspaceDTO> Workspaces { get; set; } = new List<WorkspaceDTO>();
+        public FileDTO Image { get; set; }
+
+        public int? TokenId { get; set; }
+        public TokenDTO? Token { get; set; }
     }
 }
