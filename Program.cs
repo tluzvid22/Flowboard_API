@@ -6,13 +6,14 @@ using API.Configs;
 using API.Behavior;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using FluentValidation;
-using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddDbContext<FlowboardContext>(options =>
-        options.UseNpgsql(builder.Configuration.GetConnectionString("FlowboardDB")));
+builder.Services.AddDbContext<FlowboardContext>(options => {
+    options.UseNpgsql(builder.Configuration.GetConnectionString("FlowboardDB"));
+    options.EnableSensitiveDataLogging();
+    });
 
 
 builder.Services.AddControllers();

@@ -4,6 +4,7 @@ using Data.Entities;
 using Data.Setup;
 using FluentResults;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Requests.List.Create
 {
@@ -22,6 +23,12 @@ namespace API.Requests.List.Create
         public async Task<Result<ListDTO>> Handle(CreateListRequest request, CancellationToken cancellationToken)
         {
             var list = _mapper.Map<Data.Entities.List>(request);
+
+            if (await _db.Lists.Where(list => list.WorkspaceId == request.WorkspaceId).AnyAsync())
+            {
+                var order = _db.Lists.Where(list => list.WorkspaceId == request.WorkspaceId).Max(list => list.Order);
+                list.Order = order + 1;
+            }
 
             await _db.Lists.AddAsync(list, cancellationToken);
             await _db.SaveChangesAsync(cancellationToken);

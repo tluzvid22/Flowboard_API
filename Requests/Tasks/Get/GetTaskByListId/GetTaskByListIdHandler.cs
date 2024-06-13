@@ -22,7 +22,7 @@ namespace API.Requests.Task.Get
 
         public async Task<Result<TaskDTO[]>> Handle(GetTaskByListIdRequest request, CancellationToken cancellationToken)
         {
-            var tasks = await _db.Tasks.Where(f => f.ListId == request.ListId).ToListAsync();
+            var tasks = await _db.Tasks.Where(f => f.ListId == request.ListId).OrderBy(f => f.Order).ToListAsync();
 
             return _mapper.Map<TaskDTO[]>(tasks);
         }

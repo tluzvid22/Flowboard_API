@@ -1,7 +1,9 @@
 ﻿using API.DTOs;
 using API.Helpers;
 using API.Requests.Task.Create;
+using API.Requests.Task.Delete;
 using API.Requests.Task.Get;
+using API.Requests.Task.Update;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,6 +28,26 @@ namespace API.Controllers
             var result = await _mediator.Send(task);
             
             return result.IsSuccess ? Results.Created("/task", result.Value) : result.Errors.ToBadRequest();
+        }
+        
+        [HttpPut]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(TaskDTO))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IResult> UpdateTaskAsync(UpdateTaskRequest task)
+        {
+            var result = await _mediator.Send(task);
+            
+            return result.IsSuccess ? Results.Ok(result.Value) : result.Errors.ToBadRequest();
+        }
+        
+        [HttpDelete("{Id}")]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(TaskDTO))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IResult> DeleteTaskAsync(int Id)
+        {
+            var result = await _mediator.Send(new DeleteTaskByIdRequest(Id));
+            
+            return result.IsSuccess ? Results.Ok(result.Value) : result.Errors.ToBadRequest();
         }
 
         [HttpGet("list/{ListId}")]

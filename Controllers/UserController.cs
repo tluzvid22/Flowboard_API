@@ -38,6 +38,16 @@ namespace API.Controllers
             return result.IsSuccess ? Results.Ok(result.Value) : result.Errors.ToBadRequest();
         } 
         
+        [HttpGet("username/search/{Username}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<PublicUserDTO[]>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IResult> GetUserByIdAsync(string Username)
+        {
+            var result = await _mediator.Send(new GetUserByUsernameRequest(Username));
+
+            return result.IsSuccess ? Results.Ok(result.Value) : result.Errors.ToBadRequest();
+        } 
+        
         [HttpGet("token/{Token}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<UserDTO[]>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -69,7 +79,7 @@ namespace API.Controllers
             return result.IsSuccess ? Results.Ok(result.Value) : result.Errors.ToBadRequest();
         }
 
-        [HttpGet("username/{username}")]
+        [HttpGet("username/exists/{username}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IResult> GetUsernameExists(string username)

@@ -23,7 +23,7 @@ namespace API.Requests.File.Get
 
         public async Task<Result<FileDTO[]>> Handle(GetFileByTaskIdRequest request, CancellationToken cancellationToken)
         {
-            var file = await _db.Files.Select(i => new { i.Name, i.FileType, i.Id, i.CreatedAt, i.CreatedBy, i.UpdatedAt, i.UpdatedBy, i.TaskId })
+            var file = await _db.Files.Select(i => new { i.Name, i.FileType, i.Id, i.CreatedAt, i.UpdatedAt, i.TaskId })
                 .Where(f => f.TaskId == request.TaskId)
                 .ToListAsync();
 
@@ -35,10 +35,8 @@ namespace API.Requests.File.Get
                     Id = file.Id,
                     FileType = file.FileType,
                     CreatedAt = file.CreatedAt,
-                    CreatedBy = file.CreatedBy,
                     Name = file.Name,
                     UpdatedAt = file.UpdatedAt,
-                    UpdatedBy = file.UpdatedBy,
                     TaskId = file.TaskId,
                     File = null
                 });

@@ -4,6 +4,6 @@ using MediatR;
 
 namespace API.Requests.Token.Create
 {
-    public record CreateTokenRequest(string Value, int UserId) : IRequest<Result<TokenDTO>>;
+    public record CreateTokenRequest(string Value, int UserId, DateTime Expires) : IRequest<Result<TokenDTO>>;
 
 }

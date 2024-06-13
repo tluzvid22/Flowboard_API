@@ -22,7 +22,12 @@ namespace API.Requests.Workspace.Get
 
         public async Task<Result<WorkspaceDTO[]>> Handle(GetWorkspaceByUserIdRequest request, CancellationToken cancellationToken)
         {
-            var workspaces = await _db.Workspaces.Where(workspace => workspace.UserId == request.UserId && workspace.User.Token.Value == request.Token).ToListAsync();
+            var workspaces = await _db.Workspaces
+                .Where(workspace => workspace.UserId == request.UserId && workspace.User.Token.Value == request.Token)
+                .Include(workspace => workspace.Lists)
+                .Include(workspace => workspace.Collaborator)
+                .AsNoTracking()
+                .ToListAsync();
 
             return _mapper.Map<WorkspaceDTO[]>(workspaces);
         }

@@ -43,6 +43,12 @@ public record User : AuditEntity
     public Files Image { get; set; }
 
     public ICollection<Workspace> Workspaces { get; set; } = new List<Workspace>();
+    public ICollection<Collaborator> Collaborations { get; set; } = [];
+    public virtual ICollection<Friend> FriendsUser1 { get; set; } = [];
+    public virtual ICollection<Friend> FriendsUser2 { get; set; } = [];
+    public virtual ICollection<Request> SenderRequestsUser1 { get; set; } = [];
+    public virtual ICollection<Request> ReceiverRequestsUser2 { get; set; } = [];
+    public ICollection<Request> Requests { get; set; } = new List<Request>();
 
     public int? TokenId { get; set; }
     public Token Token { get; set; }

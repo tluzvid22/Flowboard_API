@@ -23,6 +23,7 @@ namespace API.Requests.Workspace.Delete
         public async Task<Result<bool>> Handle(DeleteWorkspaceByIdRequest request, CancellationToken cancellationToken)
         {
             var workspace = await _db.Workspaces
+                .Include(workspace => workspace.Collaborator)
                 .Include(workspace => workspace.Lists)
                 .ThenInclude(list => list.Tasks)
                 .ThenInclude(task => task.Files)
@@ -36,11 +37,14 @@ namespace API.Requests.Workspace.Delete
             {
                 var files = ((workspace.Lists.SelectMany(list => list.Tasks.SelectMany(task => task.Files)))).ToArray();
                 _db.Files.RemoveRange(files);
+                var collaborators = workspace.Collaborator;
+                _db.Collaborator.RemoveRange(collaborators);
                 _db.Workspaces.Remove(workspace);
                 await _db.SaveChangesAsync();
+                return true;
             }
 
-            return true;
+            return false;
         }
     }
 }

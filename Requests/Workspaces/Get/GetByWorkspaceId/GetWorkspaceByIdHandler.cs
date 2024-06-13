@@ -23,7 +23,6 @@ namespace API.Requests.Workspace.Get
         public async Task<Result<WorkspaceDTO>> Handle(GetWorkspaceByIdRequest request, CancellationToken cancellationToken)
         {
             var list = await _db.Workspaces
-                .Include(workspace => workspace.Lists)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(workspace => workspace.Id == request.WorkspaceId && workspace.UserId == request.UserId && workspace.User.Token.Value == request.Token, cancellationToken);
 

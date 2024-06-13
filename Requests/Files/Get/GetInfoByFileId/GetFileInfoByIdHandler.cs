@@ -26,15 +26,15 @@ namespace API.Requests.Files.Get
         public async Task<Result<FileDTO>> Handle(GetFileInfoByIdRequest request, CancellationToken cancellationToken)
         {
             var file = await _db.Files
-                .Select(i => new { i.Name, i.FileType, i.Id, i.CreatedAt, i.CreatedBy, i.UpdatedAt, i.UpdatedBy, i.TaskId })
+                .Select(i => new { i.Name, i.FileType, i.Id, i.CreatedAt, i.UpdatedAt, i.TaskId })
                 .Where(i => i.Id == request.FileId)
                 .FirstOrDefaultAsync(cancellationToken);
 
 
             return _mapper.Map<FileDTO>(
                 new Data.Entities.Files(){ Id = file.Id, FileType=file.FileType, 
-                CreatedAt=file.CreatedAt, CreatedBy=file.CreatedBy, 
-                Name=file.Name, UpdatedAt=file.UpdatedAt, UpdatedBy=file.UpdatedBy, TaskId=file.TaskId, File= null});
+                CreatedAt=file.CreatedAt, 
+                Name=file.Name, UpdatedAt=file.UpdatedAt, TaskId=file.TaskId, File= null});
         }
     }
 }

@@ -9,11 +9,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Data.Migrations
+namespace API.Migrations
 {
     [DbContext(typeof(FlowboardContext))]
-    [Migration("20240520052819_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240612105503_Added_Collaboration_entity")]
+    partial class Added_Collaboration_entity
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,48 @@ namespace Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("Data.Entities.Collaborator", b =>
+                {
+                    b.Property<int>("WorkspaceId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("CanDelete")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("CanModify")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("CanRead")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.HasKey("WorkspaceId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Collaborator");
+                });
 
             modelBuilder.Entity("Data.Entities.Files", b =>
                 {
@@ -70,6 +112,36 @@ namespace Data.Migrations
                     b.ToTable("Files");
                 });
 
+            modelBuilder.Entity("Data.Entities.Friend", b =>
+                {
+                    b.Property<int>("User1Id")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("User2Id")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.HasKey("User1Id", "User2Id");
+
+                    b.HasIndex("User2Id");
+
+                    b.ToTable("Friends");
+                });
+
             modelBuilder.Entity("Data.Entities.List", b =>
                 {
                     b.Property<int>("Id")
@@ -91,6 +163,9 @@ namespace Data.Migrations
                         .HasMaxLength(25)
                         .HasColumnType("character varying(25)");
 
+                    b.Property<int>("Order")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -106,6 +181,47 @@ namespace Data.Migrations
                     b.HasIndex("WorkspaceId");
 
                     b.ToTable("Lists");
+                });
+
+            modelBuilder.Entity("Data.Entities.Request", b =>
+                {
+                    b.Property<int>("SenderId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ReceiverId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<int>("RequestedByUserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("SenderId", "ReceiverId");
+
+                    b.HasIndex("ReceiverId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Requests");
                 });
 
             modelBuilder.Entity("Data.Entities.Task", b =>
@@ -139,6 +255,9 @@ namespace Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
+                    b.Property<int>("Order")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -161,7 +280,7 @@ namespace Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("ExpiryDate")
+                    b.Property<DateTime>("Expires")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("UserId")
@@ -188,10 +307,6 @@ namespace Data.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -306,6 +421,25 @@ namespace Data.Migrations
                     b.ToTable("Workspaces");
                 });
 
+            modelBuilder.Entity("Data.Entities.Collaborator", b =>
+                {
+                    b.HasOne("Data.Entities.User", "User")
+                        .WithMany("Collaborations")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Data.Entities.Workspace", "Workspace")
+                        .WithMany("Collaborators")
+                        .HasForeignKey("WorkspaceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
+
+                    b.Navigation("Workspace");
+                });
+
             modelBuilder.Entity("Data.Entities.Files", b =>
                 {
                     b.HasOne("Data.Entities.Task", "Task")
@@ -313,6 +447,25 @@ namespace Data.Migrations
                         .HasForeignKey("TaskId");
 
                     b.Navigation("Task");
+                });
+
+            modelBuilder.Entity("Data.Entities.Friend", b =>
+                {
+                    b.HasOne("Data.Entities.User", "User1")
+                        .WithMany("FriendsUser1")
+                        .HasForeignKey("User1Id")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Data.Entities.User", "User2")
+                        .WithMany("FriendsUser2")
+                        .HasForeignKey("User2Id")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User1");
+
+                    b.Navigation("User2");
                 });
 
             modelBuilder.Entity("Data.Entities.List", b =>
@@ -324,6 +477,29 @@ namespace Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Workspace");
+                });
+
+            modelBuilder.Entity("Data.Entities.Request", b =>
+                {
+                    b.HasOne("Data.Entities.User", "Receiver")
+                        .WithMany("ReceiverRequestsUser2")
+                        .HasForeignKey("ReceiverId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Data.Entities.User", "Sender")
+                        .WithMany("SenderRequestsUser1")
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Data.Entities.User", null)
+                        .WithMany("Requests")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Receiver");
+
+                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("Data.Entities.Task", b =>
@@ -388,6 +564,18 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Entities.User", b =>
                 {
+                    b.Navigation("Collaborations");
+
+                    b.Navigation("FriendsUser1");
+
+                    b.Navigation("FriendsUser2");
+
+                    b.Navigation("ReceiverRequestsUser2");
+
+                    b.Navigation("Requests");
+
+                    b.Navigation("SenderRequestsUser1");
+
                     b.Navigation("Token")
                         .IsRequired();
 
@@ -396,6 +584,8 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Entities.Workspace", b =>
                 {
+                    b.Navigation("Collaborators");
+
                     b.Navigation("Lists");
                 });
 #pragma warning restore 612, 618

@@ -4,9 +4,9 @@
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
+        public int Order { get; set; }
         public ICollection<int> TasksIds { get; set; } = new List<int>();
 
         public int WorkspaceId { get; set; }
-        public WorkspaceDTO Workspace { get; set; }
     }
 }

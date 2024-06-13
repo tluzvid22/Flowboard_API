@@ -10,6 +10,7 @@ namespace API.Requests.Task.Create
     public record CreateTaskRequest : IRequest<Result<TaskDTO>>
     {
         public string Name { get; set; } = string.Empty;
+
         public int ListId { get; set; }
     }
 

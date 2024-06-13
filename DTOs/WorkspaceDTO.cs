@@ -6,7 +6,7 @@
 
         public string Name { get; set; } = string.Empty;
 
-        public ICollection<int> ListsIds { get; set; } = new List<int>();
+        public ListDTO[] Lists { get; set; } = [];
 
         public int UserId { get; set; }
     }

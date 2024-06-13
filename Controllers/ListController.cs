@@ -1,7 +1,11 @@
 ﻿using API.DTOs;
 using API.Helpers;
 using API.Requests.List.Create;
+using API.Requests.List.Delete;
 using API.Requests.List.Get;
+using API.Requests.List.Update;
+using API.Requests.Task.Delete;
+using API.Requests.Task.Update;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,6 +31,27 @@ namespace API.Controllers
             
             return result.IsSuccess ? Results.Created("/list", result.Value) : result.Errors.ToBadRequest();
         }
+
+        [HttpPut]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ListDTO))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IResult> UpdateListAsync(UpdateListRequest list)
+        {
+            var result = await _mediator.Send(list);
+
+            return result.IsSuccess ? Results.Ok(result.Value) : result.Errors.ToBadRequest();
+        }
+
+        [HttpDelete("{Id}")]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ListDTO))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IResult> DeleteTaskAsync(int Id)
+        {
+            var result = await _mediator.Send(new DeleteListByIdRequest(Id));
+
+            return result.IsSuccess ? Results.Ok(result.Value) : result.Errors.ToBadRequest();
+        }
+
 
         [HttpGet("workspace/{WorkspaceId}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ListDTO[]>))]

@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Entities;
+
 public record Task : AuditEntity
 {
     [Key]
@@ -10,11 +12,16 @@ public record Task : AuditEntity
 
     [Required, MaxLength(50)]
     public string Name { get; set; } = string.Empty;
+
+    [Required]
+    public int Order { get; set; }
+
     public string Description { get; set; } = string.Empty;
     public DateTime? DueDate { get; set; }
 
     [Required, ForeignKey("List")]
     public int ListId { get; set; }
+
     public List List { get; set; }
 
 

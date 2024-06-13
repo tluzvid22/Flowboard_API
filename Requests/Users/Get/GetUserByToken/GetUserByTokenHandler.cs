@@ -5,6 +5,7 @@ using Data.Setup;
 using FluentResults;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace API.Requests.Users.Get
 {
@@ -25,6 +26,10 @@ namespace API.Requests.Users.Get
         {
             var user = await _db.Users
                 .Where(user => user.Token.Value == request.Token)
+                .Include(user => user.Image)
+                .Include(user => user.Workspaces)
+                .ThenInclude(workspace => workspace.Lists)
+                .AsNoTracking()
                 .ToListAsync(cancellationToken);
 
             return _mapper.Map<UserDTO[]>(user);

@@ -13,7 +13,7 @@ namespace Data.Entities
         public string Value { get; set; } = string.Empty;
 
         [Required]
-        public DateTime ExpiryDate { get; set; } = DateTime.UtcNow.AddDays(15);
+        public DateTime Expires { get; set; }
 
         [ForeignKey("User")]
         public int UserId { get; set; }

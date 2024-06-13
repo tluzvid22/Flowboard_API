@@ -23,6 +23,9 @@ namespace API.Requests.Workspace.Create
         {
             var workspace = _mapper.Map<Data.Entities.Workspace>(request);
 
+            workspace.Collaborator.Add(new Collaborator() { WorkspaceId = workspace.Id, UserId = request.UserId, IsAdmin = true, 
+                CanDelete = true, CanModify = true, CanRead = true});
+
             await _db.Workspaces.AddAsync(workspace, cancellationToken);
             await _db.SaveChangesAsync(cancellationToken);
 
