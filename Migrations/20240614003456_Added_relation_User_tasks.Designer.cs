@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Migrations
 {
     [DbContext(typeof(FlowboardContext))]
-    [Migration("20240612110304_Updated_Audit_Entity")]
-    partial class Updated_Audit_Entity
+    [Migration("20240614003456_Added_relation_User_tasks")]
+    partial class Added_relation_User_tasks
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -292,9 +292,6 @@ namespace API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("TaskId")
-                        .HasColumnType("integer");
-
                     b.Property<int?>("TokenId")
                         .HasColumnType("integer");
 
@@ -312,12 +309,29 @@ namespace API.Migrations
 
                     b.HasIndex("ImageId");
 
-                    b.HasIndex("TaskId");
-
                     b.HasIndex("Username")
                         .IsUnique();
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Data.Entities.UserTask", b =>
+                {
+                    b.Property<int>("TaskId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("TaskId", "UserId");
+
+                    b.ToTable("UserTask");
                 });
 
             modelBuilder.Entity("Data.Entities.Workspace", b =>
@@ -358,7 +372,7 @@ namespace API.Migrations
                         .IsRequired();
 
                     b.HasOne("Data.Entities.Workspace", "Workspace")
-                        .WithMany("Collaborators")
+                        .WithMany("Collaborator")
                         .HasForeignKey("WorkspaceId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -460,11 +474,26 @@ namespace API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Data.Entities.Task", null)
-                        .WithMany("AssignedUsers")
-                        .HasForeignKey("TaskId");
-
                     b.Navigation("Image");
+                });
+
+            modelBuilder.Entity("Data.Entities.UserTask", b =>
+                {
+                    b.HasOne("Data.Entities.Task", "Task")
+                        .WithMany("AssignedUsers")
+                        .HasForeignKey("TaskId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Data.Entities.User", "User")
+                        .WithMany("AssignedTasks")
+                        .HasForeignKey("TaskId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Task");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Data.Entities.Workspace", b =>
@@ -492,6 +521,8 @@ namespace API.Migrations
 
             modelBuilder.Entity("Data.Entities.User", b =>
                 {
+                    b.Navigation("AssignedTasks");
+
                     b.Navigation("Collaborations");
 
                     b.Navigation("FriendsUser1");
@@ -512,7 +543,7 @@ namespace API.Migrations
 
             modelBuilder.Entity("Data.Entities.Workspace", b =>
                 {
-                    b.Navigation("Collaborators");
+                    b.Navigation("Collaborator");
 
                     b.Navigation("Lists");
                 });

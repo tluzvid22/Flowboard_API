@@ -27,6 +27,7 @@ namespace API.Requests.Users.Get
             var user = await _db.Users
                 .Where(user => user.Token.Value == request.Token)
                 .Include(user => user.Image)
+                .Include(user => user.Collaborations.Where(c => !c.IsAdmin))
                 .Include(user => user.Workspaces)
                 .ThenInclude(workspace => workspace.Lists)
                 .AsNoTracking()

@@ -14,6 +14,6 @@
 
         public ICollection<int> FilesIds { get; set; } = new List<int>();
 
-        public ICollection<UserDTO> AssignedUsers { get; set; } = new List<UserDTO>();
+        public ICollection<UserTaskDTO> AssignedUsers { get; set; } = [];
     }
 }

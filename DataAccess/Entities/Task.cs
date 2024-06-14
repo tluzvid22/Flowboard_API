@@ -27,6 +27,6 @@ public record Task : AuditEntity
 
     public ICollection<Files> Files { get; set; } = new List<Files>();
 
-    public ICollection<User> AssignedUsers { get; set; } = new List<User>();
+    public ICollection<UserTask> AssignedUsers { get; set; } = [];
 
 }

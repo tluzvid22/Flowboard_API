@@ -37,6 +37,16 @@ namespace API.Controllers
             var result = await _mediator.Send(new GetWorkspaceByUserIdRequest(UserId, Token));
 
             return result.IsSuccess ? Results.Ok(result.Value) : result.Errors.ToBadRequest();
+        }        
+        
+        [HttpGet("CollaboratingWorkspaces/user/{UserId}/{Token}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<WorkspaceDTO[]>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IResult> GetCollaboratingWorkspaceByUserIdAsync(int UserId, string Token)
+        {
+            var result = await _mediator.Send(new GetWorkspaceByUserIdRequest(UserId, Token));
+
+            return result.IsSuccess ? Results.Ok(result.Value) : result.Errors.ToBadRequest();
         }
 
         [HttpGet("{WorkspaceId}/{UserId}/{Token}")]

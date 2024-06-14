@@ -23,7 +23,8 @@
         public string State { get; set; } = string.Empty;
 
 
-        public ICollection<WorkspaceDTO> Workspaces { get; set; } = new List<WorkspaceDTO>();
+        public ICollection<WorkspaceDTO> Workspaces { get; set; } = [];
+        public ICollection<CollaboratorDTO> Collaborations { get; set; } = [];
         public FileDTO Image { get; set; }
 
         public int? TokenId { get; set; }

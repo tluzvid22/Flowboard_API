@@ -48,6 +48,7 @@ public record User : AuditEntity
     public virtual ICollection<Friend> FriendsUser2 { get; set; } = [];
     public virtual ICollection<Request> SenderRequestsUser1 { get; set; } = [];
     public virtual ICollection<Request> ReceiverRequestsUser2 { get; set; } = [];
+    public virtual ICollection<UserTask> AssignedTasks { get; set; } = [];
     public ICollection<Request> Requests { get; set; } = new List<Request>();
 
     public int? TokenId { get; set; }

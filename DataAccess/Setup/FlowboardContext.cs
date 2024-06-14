@@ -8,6 +8,7 @@ namespace Data.Setup
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Friend> Friends { get; set; }
+        public DbSet<UserTask> UserTask { get; set; }
         public DbSet<Request> Requests { get; set; }
         public DbSet<Token> Tokens { get; set; }
         public DbSet<Workspace> Workspaces { get; set; }
@@ -58,8 +59,25 @@ namespace Data.Setup
                 .HasOne(f => f.User)
                 .WithMany(u => u.Collaborations)
                 .HasForeignKey(f => f.UserId)
+                .OnDelete(DeleteBehavior.Restrict);            
+            
+            modelBuilder.Entity<UserTask>()
+                .HasOne(f => f.User)
+                .WithMany(u => u.AssignedTasks)
+                .HasForeignKey(f => f.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+            
+            modelBuilder.Entity<UserTask>()
+                .HasOne(f => f.Task)
+                .WithMany(u => u.AssignedUsers)
+                .HasForeignKey(f => f.TaskId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<UserTask>().HasKey(ut => new
+            {
+                ut.TaskId,
+                ut.UserId
+            });
             modelBuilder.Entity<Friend>().HasKey(f => new
             {
                 f.User1Id,

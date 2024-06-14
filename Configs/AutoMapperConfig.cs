@@ -10,6 +10,7 @@ using API.Requests.Task.Create;
 using API.Requests.Task.Update;
 using API.Requests.Token.Create;
 using API.Requests.Users.Create;
+using API.Requests.UserTasks.Create;
 using API.Requests.Workspace.Create;
 using AutoMapper;
 using Data.Entities;
@@ -36,6 +37,10 @@ namespace API.Configs
             CreateMap<UserDTO, User>();  
             
             CreateMap<User, PublicUserDTO>();
+
+            CreateMap<UserTask, UserTaskDTO>();
+            CreateMap<UserTaskDTO, UserTask>();
+            CreateMap<CreateUserTaskRequest, UserTask>();
 
             CreateMap<Collaborator, CollaboratorDTO>();
             CreateMap<CollaboratorDTO, Collaborator>();
